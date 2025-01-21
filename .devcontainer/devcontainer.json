@@ -34,7 +34,8 @@
 				"uva-school-of-data-science.sds-vscode",
 				"GitHub.copilot-chat",
 				"GitHub.copilot",
-				"GitHub.codespaces"
+				"GitHub.codespaces",
+				"RandomFractalsInc.vscode-data-preview"
 			]
 		}
 	},
