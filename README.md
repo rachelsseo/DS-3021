@@ -10,7 +10,7 @@ A digital version of syllabus:  [https://novavolunteer.github.io/MLBook/readme](
 
 * Brian Wright, Ph.D., Office: TBD
 * Email: brianwright@virginia.edu
-* TA: Macro Chavez
+* TA: Marco Gutierrez Chavez
 * Email: sgw3fy@virginia.edu
 * Class Location: School of Data Science Building 
 
