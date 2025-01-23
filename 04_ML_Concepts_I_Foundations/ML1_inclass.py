@@ -1,9 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 ML1 In-Class
 .py file
 """
+#%% [markdown]
+# [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github.com/UVADS/DS-3021/blob/main/04_ML_Concepts_I_Foundations/ML1_inclass.py#scrollTo=9723a7ee)
+
+# [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/UVADS/DS-3001/blob/main/04_ML_Concepts_I_Foundations/ML1_inclass.ipynb#scrollTo=9723a7ee)
+#%%
+
 #%%
 # import packages
 from pydataset import data
@@ -26,7 +30,8 @@ iris.head()
 """
 Example: k-Nearest Neighbors
 """
-# We want to split the data into train and test data sets. To do this, we will use sklearn's train_test_split method.
+# We want to split the data into train and test data sets. To do this, 
+# we will use sklearn's train_test_split method.
 # First, we need to separate variables into independent and dependent dataframes.
 
 X = iris.drop(['Species'], axis=1).values   # dependent variables
@@ -70,12 +75,14 @@ patterns['Petal.Width'].describe()
 """
 Mild disclaimer
 """
-# Do not worry about understanding the machine learning in this example! We go over kNN models at length later in the course; 
-# you do not need to understand exactly what the model is doing quite yet. For now, ask yourself:
+# Do not worry about understanding the machine learning in this example! We go over kNN models at 
+# length later in the course; you do not need to understand exactly what the model is doing quite yet. 
+# For now, ask yourself:
 
 # 1. What is the purpose of data splitting?
 # 2. What can we learn from data testing/validation?
 # 3. How do we know if a model is working?
 # 4. How could we find the model error?
 
-# If you want, try changing the size of the test data or the number of n_neighbors and see what changes!
+# If you want, try changing the size of the test data 
+# or the number of n_neighbors and see what changes!
