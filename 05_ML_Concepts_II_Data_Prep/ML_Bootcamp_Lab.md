@@ -13,6 +13,7 @@ Step one: Review these two datasets and brainstorm problems that could be addres
 Step two: Work through the steps outlined in the examples to include the following elements: 
 
   * What is a independent Business Metric for your problem? 
+ 
   * Data preparation:  
     * correct variable type/class as needed
     * collapse factor levels as needed

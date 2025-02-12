@@ -34,5 +34,6 @@
     },
     "cSpell.words": [
         "rachelseo"
-    ]
+    ],
+    "remote.autoForwardPortsFallback": 0
 }
