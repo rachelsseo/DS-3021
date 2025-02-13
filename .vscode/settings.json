@@ -33,7 +33,12 @@
         "sound": "off"
     },
     "cSpell.words": [
+<<<<<<< HEAD
         "rachelseo"
     ],
     "remote.autoForwardPortsFallback": 0
+=======
+        "multicolinearity"
+    ]
+>>>>>>> upstream/main
 }

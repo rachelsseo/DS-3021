@@ -12,11 +12,11 @@ A digital version of syllabus:  [https://novavolunteer.github.io/MLBook/readme](
 * Email: brianwright@virginia.edu
 * TA: Marco Gutierrez Chavez
 * Email: sgw3fy@virginia.edu
-* Class Location: School of Data Science Building 
+* Class Location: School of Data Science Building, room 206
 
 Brian's Office Hours: In person in my office SDS Building 434 or Virtual on Discord - Monday 1-3pm 
 
-TA office hours: TBD 
+TA office hours: Marco Gutierrez Chavez - Tues/Thurs 1:15 - 3:15 pm, conference space 433
 
 Course Materials: [**Foundations of Machine Learning Repo**](https://github.com/UVADS/DS-3001/3021)
 
