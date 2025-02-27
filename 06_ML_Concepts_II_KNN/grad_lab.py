@@ -4,21 +4,41 @@ Graduation Lab: Week 6
 
 Instructions:
 
-Let's build a kNN model using the college completion data from last week. 
+Let's build a kNN model using the college completion data. 
 The data is messy and you have a degrees of freedom problem, as in, we have too many features.  
 
 You've done most of the hard work already, so you should be ready to move forward with building your model. 
 
-1. Use the question/target variable you submitted from last week and build a model to answer the question you created for this dataset. 
+1. Use the question/target variable you submitted and 
+build a model to answer the question you created for this dataset. 
 
-2. Build and optimize a kNN model to predict your target variable. Meaning use the tune set to select the correct k value. 
+2. Build and optimize a kNN model to predict your target variable. 
+Meaning use the train set to select the correct k value. Make sure it is a classification problem, meaning
+if needed changed the target variable.
 
-3. Experiment with the threshold function, what happens at higher and lower thresholds. Document what you see in comments. 
+3. Create a dataframe that includes the test target values, test predicted values, 
+and tes probabilities of the positive class.
 
-4. Evaluate the results using the confusion matrix (at the default threshold). Then talk through your question, summarize what 
+4. Use the above dataframe to experiment with the threshold function. What happens at higher 
+and lower thresholds when looking at the confusion matrix? Document what you see in comments.
+
+5. No code question: If you adjusted the k hyperparameter what do you think would
+happen to the threshold function? Would the confusion look the same at the same threshold 
+levels or not? Why or why not?
+
+6. Evaluate the results using the confusion matrix (at the default threshold). 
+Then talk through your question, summarize what 
 concerns or positive elements do you have about the model? 
 
-Bonus: Adjust the function that selects k to output on Specificity instead of Accuracy
+7. Clean up your code such that you have 2 functions. One the cleans the data & splits into training|test and one that 
+allows you to train and test the model with different k and threshold values. Make sure not to use variable names in the 
+functions, you want the functions to be usable in different scenarios (see question 9). 
+
+8. How well does the model preform? Did the adjustments of the threshold and k values help the model? Why or why not? 
+
+9. Choose another variable as the target in the dataset and create another kNN model using the two functions you created in
+step 7. 
+
 """
 
 # example of how I cleaned the data
