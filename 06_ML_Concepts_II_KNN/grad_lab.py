@@ -12,9 +12,8 @@ You've done most of the hard work already, so you should be ready to move forwar
 1. Use the question/target variable you submitted and 
 build a model to answer the question you created for this dataset. 
 
-2. Build and optimize a kNN model to predict your target variable. 
-Meaning use the train set to select the correct k value. Make sure it is a classification problem, meaning
-if needed changed the target variable.
+2. Build and optimize a kNN model to predict your target variable using 3 nearest neighbors. Make sure it is a classification problem,
+meaning if needed change the target variable.
 
 3. Create a dataframe that includes the test target values, test predicted values, 
 and tes probabilities of the positive class.
@@ -43,6 +42,7 @@ step 7.
 
 # example of how I cleaned the data
 # README for the dataset - https://data.world/databeats/college-completion/workspace/file?filename=README.txt
+#%%
 import pandas as pd
 
 grad_data = pd.read_csv('https://query.data.world/s/qpi2ltkz23yp2fcaz4jmlrskjx5qnp', encoding="cp1252")
