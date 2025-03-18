@@ -183,7 +183,7 @@ print(metrics.classification_report(final_model.target, final_model.pred)) #Nice
 #%%
 #Compute the Brier Score Loss and Example what it is measuring 
 
-https://scikit-learn.org/stable/modules/model_evaluation.html
+# https://scikit-learn.org/stable/modules/model_evaluation.html
 
 
 
