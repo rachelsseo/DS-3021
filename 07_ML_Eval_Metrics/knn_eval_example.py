@@ -175,16 +175,71 @@ print(metrics.log_loss(final_model.target, final_model.pos_prob))
 # %%
 #Get the F1 Score
 print(metrics.f1_score(final_model.target, final_model.pred))
+# what does this mean?
+
+# %%
+#generate function to calculate the F1 manually (you can use precision and recall functions)
+#This is a good way to understand how the F1 score is calculated
+#Then run it on the is dataset and compare with above function
 
 # %%
 #Extra metrics
 print(metrics.classification_report(final_model.target, final_model.pred)) #Nice Work!
 
 #%%
-#Compute the Brier Score Loss and Example what it is measuring 
+# Plot density plots of the final_model.target and final_model.pred on the same chart
+plt.figure(figsize=(10, 6))
+final_model['target'].astype(int).plot(kind='density', label='Actual Target', linestyle='--')
+final_model['pred'].astype(int).plot(kind='density', label='Predicted Target', linestyle='-')
+plt.title('Density Plot of Actual vs Predicted Targets')
+plt.xlabel('Class')
+plt.legend()
+plt.show()
 
+<<<<<<< HEAD
 # https://scikit-learn.org/stable/modules/model_evaluation.html
+=======
+#%%
+# Calculate cross-entropy loss
+cross_entropy_loss = metrics.log_loss(final_model.target, final_model.pos_prob)
+print(f"Cross-Entropy Loss: {cross_entropy_loss}")
+>>>>>>> upstream/main
 
+#%%
+# Calculate cross-entropy loss manually
+def cross_entropy(y_true, y_pred):
+    epsilon = 1e-15 # Small value to avoid log(0)
+    y_pred = np.clip(y_pred, epsilon, 1 - epsilon) # Clip the predicted values to avoid log(0), no 0s or 1s
+    ce_loss = -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
+    return ce_loss
 
+#manual_cross_entropy_loss = cross_entropy(final_model.target, final_model.pos_prob)
+# run the above line but make final_model.target and final_model.pos_prob numpy arrays
+# so that the function can run properly
+manual_cross_entropy_loss = cross_entropy(final_model.target.to_numpy(), final_model.pos_prob)
 
-# %%
+print(f"Manual Cross-Entropy Loss: {manual_cross_entropy_loss}")
+
+#%%
+print(f"Cross-Entropy Loss: {cross_entropy_loss}")
+
+#%% [markdown]
+#Cross-entropy and log loss are essentially the same concept and are 
+#often used interchangeably in the context of classification evaluation. 
+#Both terms refer to a measure of the difference between the predicted 
+#probability distribution and the actual distribution of the target classes.
+
+# Evaluate the cross-entropy loss
+
+# Lower values of cross-entropy loss indicate better performance of the model.
+# The cross-entropy loss value should be compared with other models or baseline
+# values to determine if it is good. In general, a cross-entropy loss close to 
+# 0 indicates a good model, but the context and specific problem domain matter. 
+# Over 1 is consider bad as well. 
+
+https://wiki.cloudfactory.com/docs/mp-wiki/loss/cross-entropy-loss
+                          
+# %% [markdown]
+# ### Question
+# what else can cross-entropy loss be used for? Is there a application in Neural Networks?
+#bonus: what is softmax function and how is it related to cross-entropy loss?

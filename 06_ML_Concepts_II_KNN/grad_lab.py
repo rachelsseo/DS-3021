@@ -10,32 +10,35 @@ The data is messy and you have a degrees of freedom problem, as in, we have too 
 You've done most of the hard work already, so you should be ready to move forward with building your model. 
 
 1. Use the question/target variable you submitted and 
-build a model to answer the question you created for this dataset. 
+build a model to answer the question you created for this dataset (make sure it is a classification problem, convert if necessary). 
 
+<<<<<<< HEAD
 2. Build and optimize a kNN model to predict your target variable using 3 nearest neighbors. Make sure it is a classification problem,
 meaning if needed change the target variable.
+=======
+2. Build a kNN model to predict your target variable using 3 nearest neighbors. Make sure it is a classification problem, meaning
+if needed changed the target variable.
+>>>>>>> upstream/main
 
 3. Create a dataframe that includes the test target values, test predicted values, 
-and tes probabilities of the positive class.
+and test probabilities of the positive class.
 
-4. Use the above dataframe to experiment with the threshold function. What happens at higher 
-and lower thresholds when looking at the confusion matrix? Document what you see in comments.
-
-5. No code question: If you adjusted the k hyperparameter what do you think would
+4. No code question: If you adjusted the k hyperparameter what do you think would
 happen to the threshold function? Would the confusion look the same at the same threshold 
 levels or not? Why or why not?
 
-6. Evaluate the results using the confusion matrix (at the default threshold). 
-Then talk through your question, summarize what 
-concerns or positive elements do you have about the model? 
+5. Evaluate the results using the confusion matrix. Then "walk" through your question, summarize what 
+concerns or positive elements do you have about the model as it relates to your question? 
 
-7. Clean up your code such that you have 2 functions. One the cleans the data & splits into training|test and one that 
-allows you to train and test the model with different k and threshold values. Make sure not to use variable names in the 
-functions, you want the functions to be usable in different scenarios (see question 9). 
+6. Create two functions: One that cleans the data & splits into training|test and one that 
+allows you to train and test the model with different k and threshold values, then use them to 
+optimize your model (test your model with several k and threshold combinations). Try not to use variable names 
+in the functions, but if you need to that's fine. (If you can't get the k function and threshold function to work in one
+function just run them separately.) 
 
-8. How well does the model preform? Did the adjustments of the threshold and k values help the model? Why or why not? 
+7. How well does the model perform? Did the interaction of the adjusted thresholds and k values help the model? Why or why not? 
 
-9. Choose another variable as the target in the dataset and create another kNN model using the two functions you created in
+8. Choose another variable as the target in the dataset and create another kNN model using the two functions you created in
 step 7. 
 
 """

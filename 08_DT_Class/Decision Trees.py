@@ -12,8 +12,12 @@ from sklearn.model_selection import train_test_split,GridSearchCV,RepeatedStrati
 from sklearn import metrics
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.preprocessing import OrdinalEncoder
+<<<<<<< HEAD
 # from sklearn.tree import DecisionTreeClassifier, export_graphviz  
 from sklearn.tree import plot_tree 
+=======
+from sklearn.tree import plot_tree, DecisionTreeClassifier, export_graphviz
+>>>>>>> upstream/main
 
 # %% [markdown]
 # ### CART Example using Sklearn: Use a new Dataset, complete preprocessing, use three data
@@ -63,6 +67,30 @@ winequality["text_rank"]= winequality["text_rank"].replace(['good','average-ish'
 print(winequality["text_rank"].value_counts()) #Great!
 
 # %%
+# Encode text_rank to become a continuous variable
+winequality["text_rank"] = winequality["text_rank"].replace({'ave': 0, 'excellent': 1})
+print(winequality["text_rank"].value_counts()) # Check the encoding
+
+
+##############################################################################################################
+#%%
+def preprocess_winequality(df):
+    # Drop missing values
+    df = df.dropna()
+    
+    # Collapse text_rank into two classes
+    df["text_rank"] = df["text_rank"].replace(['good', 'average-ish', 'poor-ish', 'poor'], ['excellent', 'ave', 'ave', 'ave'])
+    
+    # Encode text_rank to become a continuous variable
+    df["text_rank"] = df["text_rank"].replace({'ave': 0, 'excellent': 1})
+    
+    # Drop quality column
+    df = df.drop(columns='quality')
+    
+    return df
+
+winequality = preprocess_winequality(winequality)
+# %%
 #check the prevalence
 print(203/(1279+203)) #of excellent
 
@@ -74,6 +102,24 @@ print(winequality["text_rank"].value_counts()) #nice
 
 # %% [markdown]
 # ## Splitting the Data
+
+def split_data(df, target, train_size=0.70, tune_size=0.50, random_state=21):
+    # Split independent and dependent variables
+    X = df.drop(columns=target)
+    y = df[target]
+    
+    # Split data into training and testing sets
+    X_train, X_temp, y_train, y_temp = train_test_split(X, y, train_size=train_size, stratify=y, random_state=random_state)
+    
+    # Split the temporary set into tuning and testing sets
+    X_tune, X_test, y_tune, y_test = train_test_split(X_temp, y_temp, train_size=tune_size, stratify=y_temp, random_state=random_state+28)
+    
+    return X_train, X_tune, X_test, y_train, y_tune, y_test
+
+# Use the function to split the winequality data
+X_train, X_tune, X_test, y_train, y_tune, y_test = split_data(winequality, 'text_rank')
+################################################################################################################
+
 
 # %%
 #split independent and dependent variables 
@@ -92,24 +138,30 @@ X_tune, X_test, y_tune, y_test = train_test_split(X_test,y_test,  train_size = 0
 # %% [markdown]
 # ## Let's Build the Model 
 
+
 # %%
 #Three steps in building a ML model
-#Step 1: Cross validation process- the process by which the training data will be used to build the initial model must be set. As seen below:
+#Step 1: Cross validation process- the process by which the 
+# training data will be used to build the initial model must be set. As seen below:
 
-kf = RepeatedStratifiedKFold(n_splits=10,n_repeats =5, random_state=42)
-# number - number of folds
-# repeats - number of times the CV is repeated, takes the average of these repeat rounds
+kf = RepeatedStratifiedKFold(n_splits=10, n_repeats =5, random_state=42)
+# n_splits- number of folds
+# n_repeats - number of times the CV is repeated, takes the average of these repeat rounds
 
-# This essentially will split our training data into k groups. For each unique group it will hold out one as a test set
-# and take the remaining groups as a training set. Then, it fits a model on the training set and evaluates it on the test set.
-# Retains the evaluation score and discards the model, then summarizes the skill of the model using the sample of model evaluation scores we choose
+# This essentially will split our training data into k groups. 
+# For each unique group it will hold out one as a test set and take the remaining groups as a training set. 
+# Then, it fits a model on the training set and evaluates it on the test set.
+# Retains the evaluation score and discards the model, 
+# then summarizes the skill of the model using the average of model evaluation scores we choose
 
 # %%
 #What score do we want our model to be built on? Let's use:
 #AUC for the ROC curve - remember this is measures how well our model distinguishes between classes
 #Recall - this is sensitivity of our model, also known as the true positive rate (predicted pos when actually pos)
 #Balanced accuracy - this is the (sensitivity + specificity)/2, or we can just say it is the number of correctly predicted data points
-print(metrics.SCORERS.keys()) #find them
+
+metrics # let's peek at the metrics we can use
+
 
 # %%
 #Define score, these are the keys we located above. This is what the models will be scored by
@@ -138,7 +190,7 @@ param={"max_depth" : [1,2,3,4,5,6,7,8,9,10,11],
 cl= DecisionTreeClassifier(random_state=1000)
 
 #Set up search for best decisiontreeclassifier estimator across all of our folds based on roc_auc
-search = GridSearchCV(cl, param, scoring=scoring, n_jobs=-1, cv=kf,refit='roc_auc')
+search = GridSearchCV(cl, param, scoring=scoring, n_jobs=1, cv=kf,refit='roc_auc')
 
 
 #%%
@@ -147,7 +199,7 @@ model = search.fit(X_train, y_train)
 
 # %% [markdown]
 # ## Let's see how we did
-
+print(model.cv_results_)
 # %%
 #Retrieve the best estimator out of all parameters passed, based on highest roc_auc
 best = model.best_estimator_
@@ -155,14 +207,9 @@ print(best) #depth of 5, good
 
 # %%
 #Creating the decision tree visual for the best estimator 
-dot_data = export_graphviz(best, out_file =None,
-               feature_names =X.columns, #feature names from dataset
-               filled=True, 
-                rounded=True, 
-                class_names = ['ave','excellent']) #classification labels 
-               
-graph=graphviz.Source(dot_data)
-graph #if chunk doesn't print visual, run this speicfic line alone
+plt.figure(figsize=(20,10))
+plot_tree(best, feature_names=X_train.columns, class_names=['ave', 'excellent'], filled=True, rounded=True)
+plt.show()
 
 # %%
 #What about the specific scores (roc_auc, recall, balanced_accuracy)? Let's try and extract them to see what we are working with ...
@@ -212,8 +259,11 @@ print(plt.plot(final_model.depth,final_model.auc)) #5 does in fact have the high
 
 # %%
 #Variable importance for the best estimator, how much weight does each feature have in determining the classification?
-varimp=pd.DataFrame(best.feature_importances_,index = X.columns,columns=['importance']).sort_values('importance', ascending=False)
+
+varimp = pd.DataFrame(best.feature_importances_, index=X_train.columns, columns=['importance']).sort_values('importance', ascending=False)
 print(varimp)
+
+
 
 # %%
 #Graph variable importance
@@ -308,7 +358,7 @@ X_tune1, X_test1, y_tune1, y_test1 = train_test_split(X_test1,y_test1,  train_si
 
 # %%
 #define search, model, paramameters and scoring will be the same...
-search_eng = GridSearchCV(cl, param, scoring=scoring, n_jobs=-1, cv=kf,refit='roc_auc')
+search_eng = GridSearchCV(cl, param, scoring=scoring, n_jobs=1, cv=kf,refit='roc_auc')
 
 #execute search
 model_eng = search_eng.fit(X_train1, y_train1)
