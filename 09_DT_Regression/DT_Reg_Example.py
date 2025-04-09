@@ -6,7 +6,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import graphviz 
+import sklearn
+#import graphviz 
 
 from sklearn.model_selection import train_test_split,RepeatedKFold,GridSearchCV
 from sklearn import metrics
@@ -22,6 +23,22 @@ from sklearn.impute import SimpleImputer
 # %%
 #Read in the data from the github repo, you should also have this saved locally...
 winequality = pd.read_csv("https://raw.githubusercontent.com/UVADS/DS-3001/main/data/winequality-red-ddl.csv")
+
+# %%
+# Calculate the Big O complexity for a decision tree
+# The complexity of building a decision tree is O(n * m * log(m)), where:
+# n = number of features
+# m = number of samples
+
+n_features = X.shape[1]
+n_samples = X.shape[0]
+
+# Assuming log base 2 for the logarithmic term
+big_o_complexity = n_features * n_samples * np.log2(n_samples)
+
+print(f"Big O complexity for building the decision tree: O({big_o_complexity:.2e})")
+
+
 
 # %%
 #Let's take a look...
@@ -83,35 +100,38 @@ kf =RepeatedKFold(n_splits=10,n_repeats =5, random_state=42)
 #Let's define our parameters, we can use any number, but let's start with only the max depth of the tree
 #this will help us find a good balance between under fitting and over fitting in our model
 
+#what does min_impurity_ decrease measure? Be specific use this reference:
+#  https://scikit-learn.org/stable/modules/tree.html#regression-criteria
+
 param={
-    "max_depth" : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+    #"max_depth" : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
     #"splitter":["best","random"],
     #"min_samples_leaf":[1,2,3,4,5,6,7,8,9,10],
     #"min_weight_fraction_leaf":[0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],
     #"max_features":["auto","log2","sqrt",None],
     #"max_leaf_nodes":[None,10,20,30,40,50,60,70,80,90] 
-    #'min_impurity_decrease':[0.00005,0.0001,0.0002,0.0005,0.001,0.0015,0.002,0.005,0.01],
+    'min_impurity_decrease':[0.00005,0.0001,0.0002,0.0005,0.001,0.0015,0.002,0.005,0.01],
     #'ccp_alpha':[.001,.01,.1]
         }
 
 # %%
-#What score do we want our model to be built on?
-#Let's use rmse, r2, mae this time.
-#print(metrics.SCORERS.keys()) #find them
-#to get rmse looks like we will need to start with mse
-
-# %%
-#Define score, what score will the splits and parameters be judged by? Here we will pass several 
+#Define score, what score will the splits and parameters be judged by? Here we will pass several, what do they measure?
 scoring= ['neg_mean_squared_error','r2','neg_mean_absolute_error']
+
+
+#%%
+# Print the available scoring options in sklearn, why doesn't this work?
+print(sorted(SCORERS.keys()))
 
 # %%
 #Step 3: Train the Model
 
-#Regressor model we will use
-reg=DecisionTreeRegressor(random_state=30)
+#Regressor model we will use, how does this criterion relate to our parameter search?
+reg=DecisionTreeRegressor(random_state=30, criterion='squared_error')
 
-#Set up search for best decisiontreeregressor estimator based on r-sqaured across all the different folds...
+#Set up search for best decision tree regressor estimator based on r-sqaured across all the different folds...
 search = GridSearchCV(reg, param, scoring=scoring, n_jobs=-1, cv=kf,refit='r2')
+
 
 #execute search on our trianing data
 model = search.fit(X_train, y_train)
@@ -119,20 +139,14 @@ model = search.fit(X_train, y_train)
 # %%
 #Retrieve the best estimator out of all parameters passed, based on lowest room mean squared error ...
 best= model.best_estimator_
-print(best) #Depth of 7, good
+print(best) #Impurity of .001
 
 # %%
 #making the decision tree for the best estimator 
-dot_data = export_graphviz(best, out_file =None,
-               feature_names =X.columns, #feature names from dataset
-               filled=True, 
-                rounded=True, ) 
-               
-graph=graphviz.Source(dot_data)
 
 # %%
 #plotting it, if chunk does not produce visual, run specific line alone to print in console
-graph #Pretty big, it is a continuous target afterall.
+#graph #Pretty big, it is a continuous target afterall.
 
 # %%
 #What about the specific scores (rmse, r2, mae)? Let's try and extract them ...
@@ -160,32 +174,26 @@ SDr2= model.cv_results_['std_test_r2']
 SDmae= model.cv_results_['std_test_neg_mean_absolute_error']
 
 #Parameter:
-depth= np.unique(model.cv_results_['param_max_depth']).data
+min_imp= np.unique(model.cv_results_['param_min_impurity_decrease']).data
 
 #Build DataFrame:
-final_model = pd.DataFrame(list(zip(depth, mean_sq_err, r2,mae, SDmse,SDr2,SDmae)),
-               columns =['depth','rmse','r2','mae',"rmseSD",'r2SD','maeSD'])
+final_model = pd.DataFrame(list(zip(min_imp, mean_sq_err, r2,mae, SDmse,SDr2,SDmae)),
+               columns =['min_imp','rmse','r2','mae',"rmseSD",'r2SD','maeSD'])
 
 print(final_model.head(10))
 #Let's take a look in our variable explorer as well to get the full dataframe...
 
-# %%
-#Remember!
-#If we used mutiple params... you won't be able to get the scores as easily
-#Say we wanted to get the scores based on max_depth still, but this time we used the parameter ccp_alpha as well
-#Use the np.where function to search for the indices where the other parameter equals their best result, in this case it is .001
-#This is an example code to find mse: model.cv_results_['mean_test_neg_mean_squared_error'][np.where((model.cv_results_['param_ccp_alpha'] == .001))]
 
 # %% [markdown]
 # ## Let's see how we did.
 
 # %%
-#Depth of 7 does in fact have the best rmse (lowest)
-print(plt.plot(final_model.depth, final_model.rmse))
+#Impurity of .001 does in fact have the best rmse (lowest)
+print(plt.plot(final_model.min_imp, final_model.rmse))
 
 # %%
 #Best r2 is at 7 as well!
-print(plt.plot(final_model.depth, final_model.r2))
+print(plt.plot(final_model.min_imp, final_model.r2))
 
 # %%
 print(best) #this matches our estimator, great!
