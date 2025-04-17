@@ -2,6 +2,7 @@
 
 #%%
 # Load libraries
+import os
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -12,9 +13,9 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix
 #%%
 import os
-os.listdir()
+#os.listdir()
 #print(os.getcwd())
-os.chdir('c:\\Users\\Brian Wright\\Documents\\3001Python\\DS-3001')
+os.chdir("/workspaces/DS-3021/")
 #%%
 # Load Data
 house_votes_Dem = pd.read_csv("data/house_votes_Dem.csv", encoding='latin')
@@ -34,10 +35,10 @@ clust_data_Dem = house_votes_Dem[["aye", "nay", "other"]]
 kmeans_obj_Dem = KMeans(n_clusters=2, random_state=1).fit(clust_data_Dem)
 
 #%%
-#Take a look at the clustering results
-print(kmeans_obj_Dem.cluster_centers_)
-print(kmeans_obj_Dem.labels_)
-print(kmeans_obj_Dem.inertia_)
+#Take a look at the clustering results # explain each of these?
+#print(kmeans_obj_Dem.cluster_centers_) 
+#print(kmeans_obj_Dem.labels_)
+#print(kmeans_obj_Dem.inertia_)
 
 
 #%%
@@ -57,8 +58,10 @@ for i in range(1, 11):
 #%%    
 # Plotting the graph
 elbow_data_Dem = pd.DataFrame({"k": range(1, 11), "wcss": wcss})
-fig = px.line(elbow_data_Dem, x="k", y="wcss", title="Elbow Method")
-fig.show()
+fig = px.line(elbow_data_Dem, x="k", y="wcss", title="Elbow Method for Optimal k")
+fig.update_layout(xaxis_title="Number of Clusters (k)", yaxis_title="Within-Cluster Sum of Squares (WCSS)")
+fig.show(renderer="browser")
+#fig.show()
 #%%
 #Retrain the model with 3 clusters
 kmeans_obj_Dem = KMeans(n_clusters=3, random_state=1).fit(clust_data_Dem)
@@ -109,7 +112,7 @@ from sklearn.metrics import silhouette_score
 # Run NbClust
 silhouette_scores = []
 for k in range(2, 11):
-    kmeans_obj = KMeans(n_clusters=k, algorithm="auto", random_state=1).fit(clust_data_Dem)
+    kmeans_obj = KMeans(n_clusters=k, algorithm="lloyd", random_state=1).fit(clust_data_Dem)
     silhouette_scores.append(silhouette_score(clust_data_Dem, kmeans_obj.labels_))
 
 best_nc = silhouette_scores.index(max(silhouette_scores))+2
@@ -126,7 +129,7 @@ fig
 
 #%%
 # Decision Tree model using clusters
-kmeans_obj_Dem = KMeans(n_clusters=3, algorithm="auto", random_state=1).fit(clust_data_Dem)
+kmeans_obj_Dem = KMeans(n_clusters=3, algorithm="lloyd", random_state=1).fit(clust_data_Dem)
 house_votes_Dem['clusters'] = kmeans_obj_Dem.labels_
 
 tree_data = house_votes_Dem.drop(columns=["Last.Name"])
@@ -143,6 +146,8 @@ party_dt.fit(features, target)
 
 dt_predict_1 = party_dt.predict(tune.drop(columns=["party.labels"]))
 print(confusion_matrix(dt_predict_1, tune["party.labels"]))
+
+#%%
 
 # Without clusters
 tree_data_nc = tree_data.drop(columns=["clusters"])
